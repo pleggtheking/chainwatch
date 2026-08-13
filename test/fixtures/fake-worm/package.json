@@ -1,0 +1,7 @@
+{
+  "name": "fake-worm",
+  "version": "1.0.0",
+  "description": "SIMULATED malicious package for ChainWatch demo. Not real malware — mimics the Shai-Hulud attack chain for testing.",
+  "main": "index.js",
+  "private": true
+}

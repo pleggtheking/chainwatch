@@ -1,0 +1,7 @@
+{
+  "name": "fake-drift-pkg",
+  "version": "1.0.0",
+  "description": "Fixture for drift detection integration test. Has clean and drifted modes.",
+  "main": "index.js",
+  "private": true
+}

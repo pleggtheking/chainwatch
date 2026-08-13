@@ -1,0 +1,30 @@
+name: ChainWatch Self-Scan
+
+on: [push, pull_request]
+
+jobs:
+  self-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: ChainWatch supply chain scan
+        uses: ./action
+        with:
+          severity: medium
+          fail-on: high
+          install-command: ''
+          sarif-output: chainwatch-results.sarif
+          upload-sarif: 'true'
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: chainwatch-results.sarif

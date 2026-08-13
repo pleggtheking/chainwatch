@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../",
+    "outDir": "./dist",
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false
+  },
+  "include": ["src/**/*", "../src/scan/**/*", "../src/reporter/sarif.ts", "../src/reporter/index.ts", "../src/reporter/pretty.ts", "../src/reporter/json.ts", "../src/reporter/runtime.ts", "../src/baseline/**/*", "../src/scan/**/*"]
+}

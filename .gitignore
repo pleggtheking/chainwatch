@@ -1,0 +1,12 @@
+node_modules/
+dist/
+!action/dist/
+server/dist/
+dashboard/dist/
+*.log
+.DS_Store
+chainwatch-events.jsonl
+.chainwatch/
+test-results.sarif
+.env
+.env.local

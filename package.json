@@ -1,0 +1,76 @@
+{
+  "name": "chainwatch",
+  "version": "1.0.0",
+  "description": "npm supply-chain runtime watchdog. Behavioral anomaly detection — watches what packages do, not what they look like.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "chainwatch": "./dist/cli/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./preload": {
+      "import": "./dist/preload.js"
+    },
+    "./recorder-preload": {
+      "import": "./dist/recorder-preload.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "action/dist/",
+    "action/action.yml",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "security",
+    "supply-chain",
+    "npm",
+    "malware",
+    "detection",
+    "behavioral-analysis",
+    "runtime-monitoring",
+    "worm-detection",
+    "postinstall",
+    "dependency-confusion"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:action": "esbuild action/src/main.ts --bundle --platform=node --target=node20 --outfile=action/dist/index.js --format=cjs",
+    "build:all": "tsup && npm run build:action",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "demo": "tsx src/cli/index.ts demo",
+    "scan": "tsx src/cli/index.ts scan",
+    "watch": "tsx src/cli/index.ts watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@types/node": "^22.20.1",
+    "esbuild": "^0.24.2",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "fake-worm": "file:./test/fixtures/fake-worm",
+    "fake-drift-pkg": "file:./test/fixtures/fake-drift-pkg"
+  }
+}

@@ -1,0 +1,73 @@
+name: Supply Chain Scan
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'pnpm-lock.yaml'
+      - 'yarn.lock'
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+  security-events: write   # required for SARIF upload
+
+jobs:
+  chainwatch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ChainWatch supply chain scan
+        uses: quantum-fabric-industries/chainwatch@v1
+        with:
+          severity: medium
+          fail-on: high
+          upload-sarif: true
+
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: chainwatch-results.sarif
+
+# ─── With baseline drift detection ──────────────────────────────────────────
+# Add these steps before the ChainWatch scan step to enable drift detection.
+# The baseline is cached by lockfile hash — when package-lock.json changes
+# (new package added), the cache misses and a fresh baseline is recorded.
+#
+#      - name: Restore baseline
+#        uses: actions/cache@v4
+#        with:
+#          path: .chainwatch/baseline.jsonl
+#          key: chainwatch-baseline-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+#          restore-keys: chainwatch-baseline-${{ runner.os }}-
+#
+#      - name: ChainWatch scan + drift detection
+#        uses: quantum-fabric-industries/chainwatch@v1
+#        with:
+#          severity: medium
+#          fail-on: high
+#          baseline-file: .chainwatch/baseline.jsonl
+#          drift-threshold: 40
+#          upload-sarif: true
+#
+#      - name: Update baseline cache
+#        uses: actions/cache/save@v4
+#        if: github.ref == 'refs/heads/main'
+#        with:
+#          path: .chainwatch/baseline.jsonl
+#          key: chainwatch-baseline-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
